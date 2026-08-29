@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "parkinsons-spiral-screening"
+version = "0.2.0"
+description = "Research baseline for Parkinson's screening from digitized spiral trajectories"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "joblib>=1.4,<2",
+  "numpy>=2.0,<3",
+  "pandas>=2.2,<4",
+  "pydantic>=2.10,<3",
+  "reportlab>=4.2,<5",
+  "scikit-learn>=1.5,<2",
+  "scipy>=1.14,<2",
+  "uvicorn[standard]>=0.34,<1",
+]
+
+[project.optional-dependencies]
+dev = ["httpx>=0.28,<1", "pytest>=8,<10"]
+
+[project.scripts]
+spiral-pd = "parkinsons_spiral.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+parkinsons_spiral = ["web/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

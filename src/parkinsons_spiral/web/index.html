@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#173f3a" />
+    <title>Motor + Voice Screening · Research Tool</title>
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Spiral screening home">
+        <span class="brand-mark" aria-hidden="true">◎</span>
+        <span>
+          <strong>Motor + Voice Screening</strong>
+          <small>Local research tool</small>
+        </span>
+      </a>
+      <div class="device-status" id="deviceStatus" aria-live="polite">
+        <span class="status-dot"></span>
+        Waiting for pen input
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Trajectory-based assessment</p>
+          <h1>Capture the movement,<br />not just the finished spiral.</h1>
+          <p class="hero-copy">
+            Complete two dominant-hand drawings and three sustained-voice recordings.
+            Raw movement data stays here; microphone audio is discarded after analysis.
+          </p>
+        </div>
+        <aside class="safety-note">
+          <strong>Research use only</strong>
+          <p>
+            This tool cannot diagnose or rule out Parkinson’s disease. A concerning
+            result or symptoms should be assessed by a qualified clinician.
+          </p>
+        </aside>
+      </section>
+
+      <section class="app-card" id="setupCard">
+        <div class="card-heading">
+          <span class="step-number">01</span>
+          <div>
+            <p class="eyebrow">Session setup</p>
+            <h2>Prepare a pseudonymous test</h2>
+          </div>
+        </div>
+        <form id="sessionForm" class="setup-form">
+          <label class="field wide">
+            <span>Participant code</span>
+            <input
+              id="participantCode"
+              name="participantCode"
+              maxlength="64"
+              placeholder="Example: STUDY-0042"
+              autocomplete="off"
+              required
+            />
+            <small>Use a study code—never a name, email, or phone number.</small>
+          </label>
+          <label class="field">
+            <span>Preferred writing hand</span>
+            <select id="handedness" required>
+              <option value="right">Right</option>
+              <option value="left">Left</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Age range</span>
+            <select id="ageBand" required>
+              <option value="not_shared">Prefer not to share</option>
+              <option value="under_40">Under 40</option>
+              <option value="40_49">40–49</option>
+              <option value="50_59">50–59</option>
+              <option value="60_69">60–69</option>
+              <option value="70_79">70–79</option>
+              <option value="80_plus">80+</option>
+            </select>
+          </label>
+          <label class="field wide">
+            <span>Parkinson’s medication timing</span>
+            <select id="medicationState" required>
+              <option value="not_applicable">Not applicable</option>
+              <option value="before_pd_medication">Before today’s dose / OFF state</option>
+              <option value="after_pd_medication">After dose / ON state</option>
+              <option value="unknown">Unknown</option>
+            </select>
+          </label>
+          <label class="consent wide">
+            <input id="consent" type="checkbox" required />
+            <span>
+              I understand this is an experimental research tool and consent to storing
+              this pseudonymous session locally on this computer.
+            </span>
+          </label>
+          <div class="wide form-actions">
+            <button class="primary" type="submit">Begin two-trial protocol</button>
+            <span class="model-state" id="modelState">Checking model…</span>
+          </div>
+        </form>
+        <div class="message" id="setupMessage" hidden></div>
+      </section>
+
+      <section class="capture-layout" id="captureArea" hidden>
+        <aside class="protocol-panel">
+          <p class="eyebrow">Protocol</p>
+          <h2>Two trials</h2>
+          <ol class="protocol-list" id="protocolList"></ol>
+          <div class="capture-tips">
+            <h3>For consistent capture</h3>
+            <ul>
+              <li>Sit comfortably and keep the tablet still.</li>
+              <li>Start at the green center and trace outward.</li>
+              <li>Use one continuous, natural movement.</li>
+              <li>Do not deliberately draw faster or slower.</li>
+            </ul>
+          </div>
+        </aside>
+
+        <section class="app-card drawing-card">
+          <div class="trial-header">
+            <div>
+              <p class="eyebrow" id="trialEyebrow">Trial 1 of 2</p>
+              <h2 id="trialTitle">Right hand · Static spiral</h2>
+              <p id="trialInstruction">
+                Keep the pen on the surface and follow the visible guide from the center outward.
+              </p>
+            </div>
+            <span class="mode-badge" id="modeBadge">Guide visible</span>
+          </div>
+
+          <div class="canvas-frame">
+            <canvas
+              id="spiralCanvas"
+              width="640"
+              height="640"
+              aria-label="Spiral drawing area"
+            ></canvas>
+            <div class="canvas-hint" id="canvasHint">Place the pen on the green center to begin</div>
+          </div>
+
+          <div class="trial-stats" aria-live="polite">
+            <span><strong id="pointCount">0</strong> samples</span>
+            <span><strong id="elapsedTime">0.0</strong> seconds</span>
+            <span><strong id="sampleRate">0</strong> Hz</span>
+            <span><strong id="pressureRange">—</strong> pressure</span>
+            <span><strong id="inputType">—</strong> input</span>
+          </div>
+          <div class="message" id="trialMessage" hidden></div>
+          <div class="drawing-actions">
+            <button class="secondary" id="clearTrial" type="button">Clear and retry</button>
+            <button class="primary" id="saveTrial" type="button">Save trial</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="app-card voice-card" id="voiceCard" hidden>
+        <div class="card-heading">
+          <span class="step-number">03</span>
+          <div>
+            <p class="eyebrow">Voice assessment</p>
+            <h2>Three steady “ah” recordings</h2>
+          </div>
+        </div>
+        <div class="voice-layout">
+          <div class="voice-instructions">
+            <p>
+              Sit about 20–30 cm from the microphone. Take a normal breath and sustain
+              <strong>“ah”</strong> at a comfortable, steady pitch and volume until recording stops.
+            </p>
+            <ul>
+              <li>Use the same microphone and position for all three recordings.</li>
+              <li>Avoid music, fans, conversation, and deliberate vocal effects.</li>
+              <li>Each recording lasts six seconds and its raw audio is not saved.</li>
+            </ul>
+          </div>
+          <div class="voice-recorder">
+            <div class="voice-progress" id="voiceProgress">Recording 1 of 3</div>
+            <div class="mic-orb" id="micOrb" aria-hidden="true">●</div>
+            <div class="recording-time" id="recordingTime">Ready</div>
+            <button class="primary" id="recordVoice" type="button">Record 6-second “ah”</button>
+            <button class="secondary" id="skipVoice" type="button">Skip voice assessment</button>
+          </div>
+        </div>
+        <div class="message" id="voiceMessage" hidden></div>
+      </section>
+
+      <section class="app-card result-card" id="resultCard" hidden>
+        <div class="card-heading">
+          <span class="step-number">03</span>
+          <div>
+            <p class="eyebrow">Experimental results</p>
+            <h2>Two independent research signals</h2>
+          </div>
+        </div>
+        <div class="modality-results">
+          <article class="modality-result">
+            <p class="eyebrow">Dominant-hand spiral</p>
+            <div class="score-value"><span id="scoreValue">—</span><small>/ 100 model score</small></div>
+            <div class="score-track" aria-hidden="true">
+              <span id="scoreFill"></span>
+            </div>
+            <p class="signal-label" id="signalLabel">Calculating…</p>
+          </article>
+          <article class="modality-result" id="voiceResultPanel">
+            <p class="eyebrow">Sustained voice</p>
+            <div class="score-value"><span id="voiceScoreValue">—</span><small>/ 100 model score</small></div>
+            <div class="score-track" aria-hidden="true">
+              <span id="voiceScoreFill"></span>
+            </div>
+            <p class="signal-label" id="voiceSignalLabel">Not completed</p>
+          </article>
+        </div>
+        <div class="result-explanation">
+          <h3 id="agreementLabel">How to read this</h3>
+          <p id="resultText"></p>
+          <p class="result-warning">
+            These values are similarities to patterns in small research datasets—not the
+            chance that this person has Parkinson’s. The 75-point elevated-signal boundary
+            is a conservative research decision rule, not 75% diagnostic confidence.
+          </p>
+        </div>
+        <div class="message" id="resultMessage" hidden></div>
+        <div class="result-actions">
+          <a class="secondary button-link" id="downloadReport" href="#">Download detailed PDF report</a>
+          <button class="secondary" id="retryVoice" type="button">Retry voice only</button>
+          <button class="secondary danger" id="deleteSession" type="button">Delete local session</button>
+          <button class="primary" id="newSession" type="button">Start another session</button>
+        </div>
+      </section>
+
+      <section class="privacy-strip">
+        <div>
+          <p class="eyebrow">Local by design</p>
+          <h2>Your capture stays here.</h2>
+        </div>
+        <p>
+          Sessions are stored in a local SQLite file. No cloud upload, account, name, or
+          contact information is required. Export only into an approved research workflow.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <span>Parkinson’s Motor + Voice Screening · Experimental build</span>
+      <a href="/docs" target="_blank" rel="noreferrer">API documentation</a>
+    </footer>
+    <script src="/assets/app.js" defer></script>
+  </body>
+</html>
