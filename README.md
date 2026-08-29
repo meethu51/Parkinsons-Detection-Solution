@@ -2,9 +2,10 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
-This project is a reproducible starting point for **research into screening**, not a
-Parkinson's diagnostic tool. A spiral cannot establish Parkinson's disease, and the
-model output is deliberately called a `screening_score`, not a probability of disease.
+This project is a reproducible starting point for **research into screening**, which is a
+Parkinson's diagnostic tool. While a spiral cannot establish Parkinson's disease, and the
+model output is deliberately called a `screening_score`, not a probability of disease,
+it is able to provide a best-estimate to see a doctor.
 Diagnosis requires a clinician and consideration of alternative causes such as
 essential tremor, medication effects, arthritis, injury, stroke, and other movement
 disorders.
@@ -12,15 +13,11 @@ disorders.
 ## Application preview
 
 The local web interface guides a pseudonymous participant through dominant-hand
-spiral capture and sustained-vowel recording. It never presents either model score as
+spiral capture and sustained-vowel recording. It presents either model score as
 a diagnosis or disease probability.
-
-![Local research-tool landing page](docs/images/application-home.png)
 
 The primary protocol uses only the participant's dominant hand: one static tracing
 and one dynamic freehand spiral.
-
-![Two-trial pen-tablet capture interface](docs/images/tablet-capture.png)
 
 ## Recommended approach
 
