@@ -1,5 +1,7 @@
 # Parkinson's spiral motor-screening research tool
 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+
 This project is a reproducible starting point for **research into screening**, not a
 Parkinson's diagnostic tool. A spiral cannot establish Parkinson's disease, and the
 model output is deliberately called a `screening_score`, not a probability of disease.
@@ -214,6 +216,12 @@ before collecting study data.
 The UCI data is CC BY 4.0. Cite: Isenkul, Sakar, and Kursun, *Parkinson Disease
 Spiral Drawings Using Digitized Graphics Tablet*, UCI Machine Learning Repository,
 [DOI 10.24432/C5Q01S](https://doi.org/10.24432/C5Q01S).
+
+## License
+
+The project source code is licensed under the [Apache License 2.0](LICENSE). Public
+datasets retain their own licenses and access conditions; the project license does not
+relicense or redistribute the datasets.
 
 ## Research background
 
