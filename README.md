@@ -7,6 +7,19 @@ Diagnosis requires a clinician and consideration of alternative causes such as
 essential tremor, medication effects, arthritis, injury, stroke, and other movement
 disorders.
 
+## Application preview
+
+The local web interface guides a pseudonymous participant through dominant-hand
+spiral capture and sustained-vowel recording. It never presents either model score as
+a diagnosis or disease probability.
+
+![Local research-tool landing page](docs/images/application-home.png)
+
+The primary protocol uses only the participant's dominant hand: one static tracing
+and one dynamic freehand spiral.
+
+![Two-trial pen-tablet capture interface](docs/images/tablet-capture.png)
+
 ## Recommended approach
 
 Do not match a new drawing to one "healthy" and one "Parkinson's" prototype. People
@@ -45,7 +58,7 @@ The project now includes a complete local research workflow:
 - a separate participant-level voice model trained on labeled raw sustained-/a/ audio
 - x/y trajectory, timestamp, pressure, tilt, device type, and stroke capture
 - automatic checks for duration, sample count, drawing size, and spiral turns
-- pseudonymous local sessions in SQLite with raw JSON export and deletion
+- pseudonymous local sessions in SQLite with detailed PDF reporting and deletion
 - participant-level feature extraction, model training, scoring, and model artifacts
 - an API, command-line interface, automated tests, and clinical-validation protocol
 
@@ -97,8 +110,8 @@ py -3.13 -m venv .venv
 4. Open [http://127.0.0.1:8000](http://127.0.0.1:8000). The status changes to
    **Pen detected** after the first pen contact.
 5. Use a pseudonymous participant code, complete the two dominant-hand spiral trials,
-   then make three six-second sustained-"ah" recordings. Export the session JSON if it
-   belongs in an approved research dataset.
+   then make three six-second sustained-"ah" recordings. Download the detailed PDF
+   report from the result screen.
 
 During drawing, verify that the interface reports `pen` input, an effective sampling
 rate of at least 40 Hz, and a pressure range that changes as force changes. Fixed
@@ -110,8 +123,14 @@ sessions are stored in `data/local/sessions.sqlite3`. Use the on-screen delete c
 to remove a session and its raw points.
 
 Browser microphone recordings use the installed FFmpeg executable for local WebM/Opus
-decoding. Raw audio is processed in memory and is not written to SQLite or exported;
-only acoustic features, quality measurements, and research scores are retained.
+decoding. Raw audio is processed in memory and is not written to SQLite or included in
+reports; only acoustic features, quality measurements, and research scores are retained.
+
+The PDF report includes capture-quality checks, per-recording pitch, jitter, shimmer,
+harmonicity and spectral measurements, spiral trajectory metrics, strongest model
+contributions, cross-validation performance, dataset provenance, and limitations. The
+raw JSON endpoint remains available to approved research workflows, but it is not the
+primary user-facing export.
 
 Outputs are written to `artifacts/`:
 
